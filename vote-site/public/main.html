@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>套装投票 | Shadow Fight 3 中文 Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="theme-accent">
+    <header class="top">
+        <div class="logo"><img src="./Logo.png" alt="暗影格斗3" height="50"> </div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="factions.html">派系</a>
+            <a href="guides.html">攻略</a>
+            <a href="codex.html">图鉴</a>
+            <a href="story.html">剧情</a>
+            <a href="http://localhost:3000/register.html"><span style="color: greenyellow;">注册</span></a>
+            <a href="http://localhost:3000/login.html"><span style="color: red;">登录</span></a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>投票系统</h1>
+
+            <div id="topbar"></div>
+            <hr>
+
+            <h2>投票列表</h2>
+            <ul id="pollList"></ul>
+
+            <hr>
+            <div id="pollDetail"></div>
+        </section>
+    </main>
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) location.href = "login.html";
+
+        const role = localStorage.getItem("role");
+        document.getElementById("topbar").innerHTML = `
+  <button onclick="logout()">退出</button>
+  ${role === "admin" ? '<a href="admin.html">管理员创建投票</a>' : ''}
+`;
+
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            location.href = "login.html";
+        }
+
+        async function api(path, options = {}) {
+            options.headers = {
+                ...(options.headers || {}),
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            };
+            const res = await fetch(path, options);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "请求失败");
+            return data;
+        }
+
+        async function loadPolls() {
+            const polls = await api("/api/polls");
+            const ul = document.getElementById("pollList");
+            ul.innerHTML = "";
+            polls.forEach(p => {
+                const li = document.createElement("li");
+                li.innerHTML = `<a href="#" onclick="showPoll(${p.id})">${p.title}</a>`;
+                ul.appendChild(li);
+            });
+        }
+
+        async function showPoll(id) {
+            const data = await api(`/api/polls/${id}`);
+            const { poll, options, voted } = data;
+
+            let html = `<h2>${poll.title}</h2>`;
+            html += `<p>状态：${voted ? "已投票（可查看结果）" : "未投票（结果隐藏）"}</p>`;
+
+            if (!voted) {
+                html += `<h4>请选择一个选项投票：</h4>`;
+                options.forEach(o => {
+                    html += `<div>
+        <input type="radio" name="opt" value="${o.id}"> ${o.text}
+      </div>`;
+                });
+                html += `<button onclick="vote(${id})">提交投票</button>`;
+            } else {
+                html += `<button onclick="loadResults(${id})">查看结果</button>
+             <div id="results"></div>`;
+            }
+
+            document.getElementById("pollDetail").innerHTML = html;
+
+            if (voted) loadResults(id);
+        }
+
+        async function vote(pollId) {
+            const selected = document.querySelector('input[name="opt"]:checked');
+            if (!selected) return alert("请选择一个选项");
+
+            await api(`/api/polls/${pollId}/vote`, {
+                method: "POST",
+                body: JSON.stringify({ optionId: selected.value })
+            });
+
+            alert("投票成功，现在可以查看结果");
+            showPoll(pollId);
+        }
+
+        async function loadResults(pollId) {
+            const rows = await api(`/api/polls/${pollId}/results`);
+            const total = rows.reduce((sum, r) => sum + r.count, 0);
+
+            let html = `<h4>投票结果（总票数：${total}）</h4>`;
+            rows.forEach(r => {
+                const pct = total ? ((r.count / total) * 100).toFixed(1) : 0;
+                html += `<div>${r.text}：${r.count} 票（${pct}%）</div>`;
+            });
+
+            document.getElementById("results").innerHTML = html;
+        }
+
+        loadPolls();
+    </script>
+    <footer>
+        本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
+    </footer>
+</body>
+
+</html>

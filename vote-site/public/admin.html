@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>创建投票 | Shadow Fight 3 中文 Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="theme-accent"><!-- 可选：派系主题 -->
+
+    <header class="top">
+        <div class="logo"><img src="./Logo.png" alt="暗影格斗3" height="50"> </div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="factions.html">派系</a>
+            <a href="guides.html">攻略</a>
+            <a href="codex.html">图鉴</a>
+            <a href="story.html">剧情</a>
+            <a href="http://localhost:3000/register.html"><span style="color: greenyellow;">注册</span></a>
+            <a href="http://localhost:3000/login.html"><span style="color: red;">登录</span></a>
+        </nav>
+    </header>
+    <main class="container">
+        <section class="hero">
+            <h1>创建投票（管理员）</h1>
+            <p><a href="main.html">返回首页</a></p>
+
+            <input id="title" placeholder="投票标题" style="width:300px"><br><br>
+
+            <div id="options"></div>
+            <button onclick="addOption()">+ 添加选项</button><br><br>
+
+            <button onclick="createPoll()">创建投票</button>
+        </section>
+    </main>
+    <script>
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
+        if (!token) location.href = "login.html";
+        if (role !== "admin") { alert("只有管理员可以创建投票"); location.href = "index.html"; }
+
+        function addOption(value = "") {
+            const div = document.createElement("div");
+            div.innerHTML = `<input class="opt" placeholder="选项内容" value="${value}" style="width:260px">`;
+            document.getElementById("options").appendChild(div);
+        }
+
+        addOption(); addOption();
+
+        async function createPoll() {
+            const title = document.getElementById("title").value.trim();
+            const opts = Array.from(document.querySelectorAll(".opt")).map(i => i.value.trim()).filter(Boolean);
+
+            if (!title) return alert("请输入标题");
+            if (opts.length < 2) return alert("至少需要2个选项");
+
+            const res = await fetch("/api/polls", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ title, options: opts })
+            });
+
+            const data = await res.json();
+            if (!res.ok) return alert(data.error);
+
+            alert("创建成功！");
+            location.href = "main.html";
+        }
+    </script>
+    <footer>
+        本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
+    </footer>
+</body>
+
+</html>
