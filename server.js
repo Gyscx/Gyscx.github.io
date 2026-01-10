@@ -7,7 +7,7 @@ const db = require("./db");
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("./"));
 
 const JWT_SECRET = "REPLACE_WITH_YOUR_SECRET"; // 实际部署请放到环境变量
 
@@ -168,3 +168,26 @@ app.get("/api/polls/:id/results", auth, (req, res) => {
 });
 
 app.listen(3000, () => console.log("Server running at http://localhost:3000"));
+
+// 修改数据库连接配置
+const connection = {
+    // 本地开发
+    development: {
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: ''
+    },
+    // 局域网访问
+    remote: {
+        host: '192.168.1.10',  // 你的电脑IP
+        user: 'remote_user',
+        password: '',
+        database: '',
+        port: 3306
+    }
+};
+
+// 根据环境选择配置
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = env === 'production' ? connection.remote : connection.development;
