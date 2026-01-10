@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="theme-accent"><!-- 可选：派系主题 -->
-
+<body class="theme-accent page-admin">
     <header class="top">
         <div class="logo"><img src="./Logo.png" alt="暗影格斗3" height="50"> </div>
         <nav>
@@ -22,32 +21,63 @@
             <a href="http://192.168.1.10:3000/login.html"><span style="color: red;">登录</span></a>
         </nav>
     </header>
+
     <main class="container">
-        <section class="hero">
-            <h1>创建投票（管理员）</h1>
-            <p><a href="main.html">返回首页</a></p>
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>管理员面板</h1>
+                <p class="muted">创建新的投票活动</p>
+                <a href="main.html" class="back-btn">← 返回投票首页</a>
+            </div>
 
-            <input id="title" placeholder="投票标题" style="width:300px"><br><br>
+            <div class="form-card">
+                <div class="form-section">
+                    <h3>投票基本信息</h3>
+                    <div class="input-group">
+                        <label for="title">投票标题</label>
+                        <input type="text" id="title" placeholder="输入投票标题" required>
+                        <div class="input-underline"></div>
+                    </div>
+                </div>
 
-            <div id="options"></div>
-            <button onclick="addOption()">+ 添加选项</button><br><br>
+                <div class="form-section">
+                    <h3>投票选项</h3>
+                    <div id="options" class="options-container"></div>
+                    <button class="add-option-btn" onclick="addOption()">+ 添加选项</button>
+                </div>
 
-            <button onclick="createPoll()">创建投票</button>
-        </section>
+                <button class="submit-btn" onclick="createPoll()">
+                    <span class="btn-text">创建投票</span>
+                    <div class="btn-loader"></div>
+                </button>
+            </div>
+        </div>
     </main>
+
     <script>
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
         if (!token) location.href = "login.html";
-        if (role !== "admin") { alert("只有管理员可以创建投票"); location.href = "index.html"; }
+        if (role !== "admin") {
+            alert("只有管理员可以创建投票");
+            location.href = "index.html";
+        }
 
         function addOption(value = "") {
             const div = document.createElement("div");
-            div.innerHTML = `<input class="opt" placeholder="选项内容" value="${value}" style="width:260px">`;
+            div.className = "option-item";
+            div.innerHTML = `
+                <div class="option-input-group">
+                    <input class="opt" placeholder="选项内容" value="${value}" required>
+                    <button type="button" class="remove-option" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
             document.getElementById("options").appendChild(div);
         }
 
-        addOption(); addOption();
+        // 初始化两个选项
+        addOption();
+        addOption();
 
         async function createPoll() {
             const title = document.getElementById("title").value.trim();
@@ -56,22 +86,42 @@
             if (!title) return alert("请输入标题");
             if (opts.length < 2) return alert("至少需要2个选项");
 
-            const res = await fetch("/api/polls", {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ title, options: opts })
-            });
+            const submitBtn = document.querySelector('.submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
 
-            const data = await res.json();
-            if (!res.ok) return alert(data.error);
+            // 显示加载状态
+            submitBtn.classList.add('loading');
+            btnText.textContent = '创建中...';
 
-            alert("创建成功！");
-            location.href = "main.html";
+            try {
+                const res = await fetch("/api/polls", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ title, options: opts })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                // 创建成功
+                btnText.textContent = '创建成功！';
+                setTimeout(() => {
+                    alert("投票创建成功！");
+                    location.href = "main.html";
+                }, 1000);
+
+            } catch (error) {
+                // 恢复按钮状态
+                submitBtn.classList.remove('loading');
+                btnText.textContent = '创建投票';
+                alert(error.message || "创建失败");
+            }
         }
     </script>
+
     <footer>
         本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
     </footer>

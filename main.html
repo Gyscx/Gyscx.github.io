@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="theme-accent">
+<body class="theme-accent page-main">
     <header class="top">
         <div class="logo"><img src="./Logo.png" alt="暗影格斗3" height="50"> </div>
         <nav>
@@ -23,28 +23,39 @@
     </header>
 
     <main class="container">
-        <section class="hero">
-            <h1>投票系统</h1>
+        <div class="main-container">
+            <div class="top-bar">
+                <div class="user-controls">
+                    <button class="logout-btn" onclick="logout()">退出登录</button>
+                    <span id="adminLink"></span>
+                </div>
+            </div>
 
-            <div id="topbar"></div>
-            <hr>
+            <div class="content-card">
+                <div class="section-header">
+                    <h1>投票系统</h1>
+                    <p class="muted">参与社区投票，分享您的意见</p>
+                </div>
 
-            <h2>投票列表</h2>
-            <ul id="pollList"></ul>
+                <div class="poll-list-section">
+                    <h2>投票列表</h2>
+                    <ul id="pollList" class="poll-list"></ul>
+                </div>
 
-            <hr>
-            <div id="pollDetail"></div>
-        </section>
+                <div class="poll-detail-section" id="pollDetail">
+                    <!-- 投票详情将动态加载到这里 -->
+                </div>
+            </div>
+        </div>
     </main>
+
     <script>
         const token = localStorage.getItem("token");
         if (!token) location.href = "login.html";
 
         const role = localStorage.getItem("role");
-        document.getElementById("topbar").innerHTML = `
-  <button onclick="logout()">退出</button>
-  ${role === "admin" ? '<a href="admin.html">管理员创建投票</a>' : ''}
-`;
+        document.getElementById("adminLink").innerHTML = role === "admin" ?
+            '<a href="admin.html" class="admin-link">创建新投票</a>' : '';
 
         function logout() {
             localStorage.removeItem("token");
@@ -65,69 +76,142 @@
         }
 
         async function loadPolls() {
-            const polls = await api("/api/polls");
-            const ul = document.getElementById("pollList");
-            ul.innerHTML = "";
-            polls.forEach(p => {
-                const li = document.createElement("li");
-                li.innerHTML = `<a href="#" onclick="showPoll(${p.id})">${p.title}</a>`;
-                ul.appendChild(li);
-            });
+            try {
+                const polls = await api("/api/polls");
+                const ul = document.getElementById("pollList");
+                ul.innerHTML = "";
+
+                if (polls.length === 0) {
+                    ul.innerHTML = '<li class="no-polls">暂无投票活动</li>';
+                    return;
+                }
+
+                polls.forEach(p => {
+                    const li = document.createElement("li");
+                    li.className = "poll-item";
+                    li.innerHTML = `
+                        <a href="#" onclick="showPoll(${p.id})" class="poll-link">
+                            <span class="poll-title">${p.title}</span>
+                            <span class="poll-arrow">→</span>
+                        </a>
+                    `;
+                    ul.appendChild(li);
+                });
+            } catch (error) {
+                console.error("加载投票列表失败:", error);
+                document.getElementById("pollList").innerHTML = '<li class="error">加载失败，请刷新页面</li>';
+            }
         }
 
         async function showPoll(id) {
-            const data = await api(`/api/polls/${id}`);
-            const { poll, options, voted } = data;
+            try {
+                const data = await api(`/api/polls/${id}`);
+                const { poll, options, voted } = data;
 
-            let html = `<h2>${poll.title}</h2>`;
-            html += `<p>状态：${voted ? "已投票（可查看结果）" : "未投票（结果隐藏）"}</p>`;
+                let html = `
+                    <div class="poll-header">
+                        <h2>${poll.title}</h2>
+                        <div class="poll-status ${voted ? 'voted' : 'not-voted'}">
+                            ${voted ? '已投票' : '未投票'}
+                        </div>
+                    </div>
+                `;
 
-            if (!voted) {
-                html += `<h4>请选择一个选项投票：</h4>`;
-                options.forEach(o => {
-                    html += `<div>
-        <input type="radio" name="opt" value="${o.id}"> ${o.text}
-      </div>`;
-                });
-                html += `<button onclick="vote(${id})">提交投票</button>`;
-            } else {
-                html += `<button onclick="loadResults(${id})">查看结果</button>
-             <div id="results"></div>`;
+                if (!voted) {
+                    html += `
+                        <div class="vote-form">
+                            <h4>请选择一个选项投票：</h4>
+                            <div class="options-list">
+                    `;
+
+                    options.forEach(o => {
+                        html += `
+                            <label class="option-radio">
+                                <input type="radio" name="opt" value="${o.id}">
+                                <span class="radio-custom"></span>
+                                <span class="option-text">${o.text}</span>
+                            </label>
+                        `;
+                    });
+
+                    html += `
+                            </div>
+                            <button class="vote-btn" onclick="vote(${id})">提交投票</button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="poll-results">
+                            <button class="results-btn" onclick="loadResults(${id})">查看结果</button>
+                            <div id="results" class="results-container"></div>
+                        </div>
+                    `;
+                }
+
+                document.getElementById("pollDetail").innerHTML = html;
+
+                if (voted) {
+                    await loadResults(id);
+                }
+            } catch (error) {
+                console.error("加载投票详情失败:", error);
+                document.getElementById("pollDetail").innerHTML = '<div class="error">加载失败，请刷新页面</div>';
             }
-
-            document.getElementById("pollDetail").innerHTML = html;
-
-            if (voted) loadResults(id);
         }
 
         async function vote(pollId) {
             const selected = document.querySelector('input[name="opt"]:checked');
             if (!selected) return alert("请选择一个选项");
 
-            await api(`/api/polls/${pollId}/vote`, {
-                method: "POST",
-                body: JSON.stringify({ optionId: selected.value })
-            });
+            try {
+                await api(`/api/polls/${pollId}/vote`, {
+                    method: "POST",
+                    body: JSON.stringify({ optionId: selected.value })
+                });
 
-            alert("投票成功，现在可以查看结果");
-            showPoll(pollId);
+                alert("投票成功，现在可以查看结果");
+                showPoll(pollId);
+            } catch (error) {
+                alert("投票失败: " + error.message);
+            }
         }
 
         async function loadResults(pollId) {
-            const rows = await api(`/api/polls/${pollId}/results`);
-            const total = rows.reduce((sum, r) => sum + r.count, 0);
+            try {
+                const rows = await api(`/api/polls/${pollId}/results`);
+                const total = rows.reduce((sum, r) => sum + r.count, 0);
 
-            let html = `<h4>投票结果（总票数：${total}）</h4>`;
-            rows.forEach(r => {
-                const pct = total ? ((r.count / total) * 100).toFixed(1) : 0;
-                html += `<div>${r.text}：${r.count} 票（${pct}%）</div>`;
-            });
+                let html = `<h4>投票结果（总票数：${total}）</h4>`;
+                rows.forEach(r => {
+                    const pct = total ? ((r.count / total) * 100).toFixed(1) : 0;
+                    const width = total ? (r.count / total) * 100 : 0;
 
-            document.getElementById("results").innerHTML = html;
+                    html += `
+                        <div class="result-item">
+                            <div class="result-info">
+                                <span class="result-text">${r.text}</span>
+                                <span class="result-stats">${r.count} 票（${pct}%）</span>
+                            </div>
+                            <div class="result-bar">
+                                <div class="result-fill" style="width: ${width}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById("results").innerHTML = html;
+            } catch (error) {
+                console.error("加载结果失败:", error);
+                document.getElementById("results").innerHTML = '<div class="error">加载结果失败</div>';
+            }
         }
 
-        loadPolls();
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            loadPolls();
+        });
     </script>
+
     <footer>
         本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
     </footer>

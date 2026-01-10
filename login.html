@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="theme-accent"><!-- 可选：派系主题 -->
-
+<body class="theme-accent page-login">
     <header class="top">
         <div class="logo"><img src="./Logo.png" alt="暗影格斗3" height="50"> </div>
         <nav>
@@ -24,32 +23,82 @@
     </header>
 
     <main class="container">
-        <h1>登录</h1>
-        <input id="username" placeholder="用户名"><br>
-        <input id="password" type="password" placeholder="密码"><br>
-        <button onclick="login()">登录</button>
-        <p><a href="register.html">去注册</a></p>
+        <div class="form-container">
+            <div class="form-header">
+                <h1>重返暗影世界</h1>
+                <p class="muted">登录您的Wiki账户，继续探索</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" placeholder="输入您的用户名" required>
+                    <div class="input-underline"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" placeholder="输入您的密码" required>
+                    <div class="input-underline"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">登录</span>
+                    <div class="btn-loader"></div>
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <p><a href="forgot-password.html">忘记密码？</a></p>
+                <p>没有账户？<a href="register.html">立即注册</a></p>
+            </div>
+        </div>
     </main>
+
     <script>
-        async function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-            const res = await fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = document.querySelector('.submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
 
-            const data = await res.json();
-            if (!res.ok) return alert(data.error);
+            // 显示加载状态
+            submitBtn.classList.add('loading');
+            btnText.textContent = '登录中...';
 
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.role);
+            try {
+                const res = await fetch("/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
 
-            location.href = "main.html";
-        }
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || '登录失败');
+                }
+
+                // 登录成功
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("role", data.role);
+
+                btnText.textContent = '登录成功！';
+                setTimeout(() => {
+                    location.href = "main.html";
+                }, 1000);
+
+            } catch (error) {
+                // 恢复按钮状态
+                submitBtn.classList.remove('loading');
+                btnText.textContent = '登录';
+                alert(error.message);
+            }
+        });
     </script>
+
     <footer>
         本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
     </footer>

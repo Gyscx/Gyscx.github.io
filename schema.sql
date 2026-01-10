@@ -1,8 +1,10 @@
+-- 完整的 schema.sql 修复版
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user'
+  role TEXT NOT NULL DEFAULT 'user',
+  email TEXT UNIQUE  -- ✅ 修复：移除 COLUMN
 );
 
 CREATE TABLE IF NOT EXISTS polls (
@@ -32,5 +34,18 @@ CREATE TABLE IF NOT EXISTS votes (
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
-UPDATE users SET role='admin' WHERE username='Gyscx';
+CREATE TABLE IF NOT EXISTS verification_codes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    code TEXT NOT NULL,
+    type TEXT NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
+-- 确保管理员用户存在
+INSERT OR IGNORE INTO users (username, password_hash, role, email) 
+VALUES ('OP_GXC', '$2b$10$dummyhashforinitialadmin', 'admin', 'admin@example.com');
+
+-- 确保角色是 admin（即使用户已存在）
+UPDATE users SET role = 'admin' WHERE username = 'OP_GXC';
