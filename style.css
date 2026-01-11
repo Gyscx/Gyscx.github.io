@@ -239,13 +239,31 @@ footer {
     /* 防止图片溢出容器，增强响应性 */
 }
 
+.responsive-img4 {
+    width: 50%;
+    /* 从20%增加到40%，放大图片 */
+    height: auto;
+    max-width: 100%;
+    /* 防止图片溢出容器，增强响应性 */
+}
+
 .td_center {
-    width: 20%;
+    width: 16.66%;
     /* 保持单元格宽度与图片协调 */
     height: auto;
     /* 改为自动高度，避免固定值导致移动端布局问题 */
     text-align: center;
-    vertical-align: middle;
+    vertical-align: bottom;
+    /* 推荐改为垂直居中，提升美观性 */
+}
+
+.td_center2 {
+    width: 16.66%;
+    /* 保持单元格宽度与图片协调 */
+    height: auto;
+    /* 改为自动高度，避免固定值导致移动端布局问题 */
+    text-align: center;
+    vertical-align: center;
     /* 推荐改为垂直居中，提升美观性 */
 }
 
@@ -960,4 +978,13 @@ footer {
     .send-code-btn {
         padding: 12px 16px;
     }
+}
+
+.span_y {
+    color: rgb(255, 174, 0);
+    font-size: 20px;
+}
+
+.span_n {
+    font-size: 20px;
 }
