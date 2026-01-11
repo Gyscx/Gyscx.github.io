@@ -267,9 +267,11 @@ footer {
     /* 推荐改为垂直居中，提升美观性 */
 }
 
-.p_size {
+.p_size,
+.span_size {
     font-size: 16px;
 }
+
 
 /* 移动端适配：针对屏幕宽度小于768px的设备（如手机） */
 @media (max-width: 768px) {
@@ -287,7 +289,8 @@ footer {
         /* 添加间距，避免内容拥挤 */
     }
 
-    .p_size {
+    .p_size,
+    .span_size {
         font-size: 12px;
     }
 
