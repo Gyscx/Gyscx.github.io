@@ -232,7 +232,7 @@ footer {
 
 /* 默认样式：放大图片，确保桌面端显示 */
 .responsive-img3 {
-    width: 40%;
+    width: 50%;
     /* 从20%增加到40%，放大图片 */
     height: auto;
     max-width: 100%;
@@ -252,7 +252,7 @@ footer {
 /* 移动端适配：针对屏幕宽度小于768px的设备（如手机） */
 @media (max-width: 768px) {
     .responsive-img3 {
-        width: 50%;
+        width: 60%;
         height: auto;
         max-width: 100%;
         /* 在移动端，图片进一步放大，占满更多空间 */
