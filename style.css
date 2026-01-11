@@ -230,6 +230,44 @@ footer {
     height: auto
 }
 
+/* 默认样式：放大图片，确保桌面端显示 */
+.responsive-img3 {
+    width: 40%;
+    /* 从20%增加到40%，放大图片 */
+    height: auto;
+    max-width: 100%;
+    /* 防止图片溢出容器，增强响应性 */
+}
+
+.td_center {
+    width: 20%;
+    /* 保持单元格宽度与图片协调 */
+    height: auto;
+    /* 改为自动高度，避免固定值导致移动端布局问题 */
+    text-align: center;
+    vertical-align: middle;
+    /* 推荐改为垂直居中，提升美观性 */
+}
+
+/* 移动端适配：针对屏幕宽度小于768px的设备（如手机） */
+@media (max-width: 768px) {
+    .responsive-img3 {
+        width: 50%;
+        height: auto;
+        max-width: 100%;
+        /* 在移动端，图片进一步放大，占满更多空间 */
+    }
+
+    .td_center {
+        width: 20%;
+        /* 单元格宽度设为100%，使每列垂直堆叠 */
+        margin-bottom: 10px;
+        /* 添加间距，避免内容拥挤 */
+    }
+
+    /* 可选：隐藏表格标题行或调整表格结构，但需谨慎，可能影响可访问性 */
+}
+
 /* ================= 9. 响应式 ================= */
 
 @media (max-width: 900px) {
