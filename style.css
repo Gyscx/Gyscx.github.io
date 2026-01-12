@@ -267,10 +267,7 @@ footer {
     /* 推荐改为垂直居中，提升美观性 */
 }
 
-.p_size {
-    font-size: 16px;
-}
-
+.p_size,
 .span_size {
     font-size: 16px;
 }
@@ -292,10 +289,7 @@ footer {
         /* 添加间距，避免内容拥挤 */
     }
 
-    .p_size {
-        font-size: 12px;
-    }
-
+    .p_size,
     .span_size {
         font-size: 12px;
     }
@@ -998,10 +992,10 @@ footer {
 }
 
 .span_y {
-    color: rgb(255, 174, 0);
-    font-size: 20px;
+    color: #e7b012;
 }
 
-.span_n {
-    font-size: 20px;
+.title_y {
+    color: #e7b012;
+    font-size: 18px;
 }
