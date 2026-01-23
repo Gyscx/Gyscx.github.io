@@ -32,7 +32,7 @@
         </div>
     </div>
     <header class="top">
-        <div class="logo"><img src="./Logo.png" alt="暗影格斗3" height="50"> </div>
+        <div class="logo"><img src="./images/Logo.png" alt="暗影格斗3" height="50"> </div>
         <nav>
             <a href="index.html">首页</a>
             <a href="factions.html">派系</a>
@@ -62,19 +62,19 @@
         <!-- 页面内容从这里开始 -->
         <h1>派系</h1>
         <div>
-            <img src="./Legion.png" alt="军团" class="responsive-img2"><img src="./Dynasty.png" alt="王朝"
-                class="responsive-img2"><img src="./Heralds.png" alt="先锋" class="responsive-img2">
+            <img src="./images/Legion.png" alt="军团" class="responsive-img2"><img src="./images/Dynasty.png" alt="王朝"
+                class="responsive-img2"><img src="./images/Heralds.png" alt="先锋" class="responsive-img2">
         </div>
         <div class="grid">
-            <a class="card" href="faction_legion.html">
+            <a class="card" href="./faction/faction_legion.html">
                 <h3>军团</h3>
                 <p>纪律 · 防守反击</p>
             </a>
-            <a class="card" href="faction_dynasty.html">
+            <a class="card" href="./faction/faction_dynasty.html">
                 <h3>王朝</h3>
                 <p>高速 · 连击压制</p>
             </a>
-            <a class="card" href="faction_herald.html">
+            <a class="card" href="./faction/faction_herald.html">
                 <h3>先锋</h3>
                 <p>机制 · 高风险爆发</p>
             </a>
@@ -84,107 +84,7 @@
     <footer>
         本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
     </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // DOM元素
-            const loginModal = document.getElementById('loginModal');
-            const userInfo = document.getElementById('userInfo');
-            const usernameDisplay = document.getElementById('usernameDisplay');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const performLogin = document.getElementById('performLogin');
-            const goToRegister = document.getElementById('goToRegister');
-            const loginDisplay = document.getElementById('loginDisplay');
-
-            // 检查登录状态
-            function checkLoginStatus() {
-                const token = localStorage.getItem('token');
-                const username = localStorage.getItem('username');
-
-                if (token && username) {
-                    // 已登录
-                    usernameDisplay.textContent = username;
-                    userInfo.style.display = 'flex';
-                    loginModal.style.display = 'none';
-                    loginDisplay.style.display = 'none';
-                } else {
-                    // 未登录
-                    userInfo.style.display = 'none';
-                    loginDisplay.style.display = 'inline';
-                }
-            }
-
-            // 模拟登录函数
-            function login(username, password) {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        if (username && password) {
-                            resolve({
-                                token: 'mock_token_' + Date.now(),
-                                username: username,
-                                role: 'user'
-                            });
-                        } else {
-                            reject(new Error('用户名或密码不能为空'));
-                        }
-                    }, 1000);
-                });
-            }
-
-            // 登录按钮点击事件
-            performLogin.addEventListener('click', async function () {
-                const username = document.getElementById('loginUsername').value;
-                const password = document.getElementById('loginPassword').value;
-
-                if (!username || !password) {
-                    alert('请输入用户名和密码');
-                    return;
-                }
-
-                performLogin.textContent = '登录中...';
-                performLogin.disabled = true;
-
-                try {
-                    const result = await login(username, password);
-
-                    localStorage.setItem('token', result.token);
-                    localStorage.setItem('username', result.username);
-                    localStorage.setItem('role', result.role);
-
-                    checkLoginStatus();
-
-                    const targetPage = localStorage.getItem('targetPage');
-                    if (targetPage) {
-                        localStorage.removeItem('targetPage');
-                        window.location.href = targetPage;
-                    } else {
-                        window.location.href = 'index.html';
-                    }
-                } catch (error) {
-                    alert('登录失败: ' + error.message);
-                    performLogin.textContent = '登录';
-                    performLogin.disabled = false;
-                }
-            });
-
-            // 注册按钮点击事件
-            goToRegister.addEventListener('click', function () {
-                window.location.href = 'register.html';
-            });
-
-            // 退出登录
-            logoutBtn.addEventListener('click', function () {
-                if (confirm('确定要退出登录吗？')) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('username');
-                    localStorage.removeItem('role');
-                    checkLoginStatus();
-                }
-            });
-
-            // 页面加载时检查登录状态
-            checkLoginStatus();
-        });
-    </script>
+    <script src="./javascript/profile.js"></script>
 </body>
 
 </html>

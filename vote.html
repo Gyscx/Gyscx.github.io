@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>套装投票 | Shadow Fight 3 中文 Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="theme-accent page-main">
+    <header class="top">
+        <div class="logo"><img src="./images/Logo.png" alt="暗影格斗3" height="50"> </div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="factions.html">派系</a>
+            <a href="guides.html">攻略</a>
+            <a href="codex.html">图鉴</a>
+            <a href="story.html">剧情</a>
+        </nav>
+
+        <!-- 用户信息区域 -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            欢迎， <span id="usernameDisplay"></span>
+            <button id="logoutBtn" class="logout-btn">退出登录</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="main-container">
+            <div class="top-bar">
+                <div class="user-controls">
+                    <span id="adminLink"></span>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="section-header">
+                    <h1>投票系统</h1>
+                    <p class="muted">参与社区投票，分享您的意见</p>
+                </div>
+
+                <div class="poll-list-section">
+                    <h2>投票列表</h2>
+                    <ul id="pollList" class="poll-list"></ul>
+                </div>
+
+                <div class="poll-detail-section" id="pollDetail">
+                    <!-- 投票详情将动态加载到这里 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
+    </footer>
+
+    <script src="./javascript/vote.js">
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,304 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // 检查登录状态
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+
+    if (!token || !username) {
+        // 未登录，保存当前页面为目标页面并跳转到登录页
+        localStorage.setItem('targetPage', window.location.href);
+        window.location.href = 'login.html';
+        return;
+    }
+    // DOM元素
+    const loginModal = document.getElementById('loginModal');
+    const goToLoginBtn = document.getElementById('goToLogin');
+    const goToRegisterBtn = document.getElementById('goToRegister');
+    const userInfo = document.getElementById('userInfo');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const messageInput = document.getElementById('messageInput');
+    const wordCount = document.getElementById('wordCount');
+    const submitBtn = document.getElementById('submitBtn');
+    const messagesList = document.getElementById('messagesList');
+    const messageCount = document.getElementById('messageCount').querySelector('span');
+
+    const maxLength = 200;
+
+    // 当前用户和留言数据
+    let currentUser = null;
+    let messages = [];
+
+    // 初始化页面
+    function initPage() {
+        // 检查用户是否已登录
+        checkLoginStatus();
+
+        // 加载留言
+        loadMessages();
+
+        // 绑定事件
+        setupEventListeners();
+
+        // 初始化字数统计
+        updateWordCount();
+    }
+
+    // 检查登录状态
+    function checkLoginStatus() {
+        // 从localStorage获取用户信息
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+
+        if (token && username) {
+            currentUser = { username: username };
+            showUserInfo();
+            hideLoginModal();
+        } else {
+            showLoginModal();
+        }
+    }
+
+    // 显示用户信息
+    function showUserInfo() {
+        if (currentUser) {
+            usernameDisplay.textContent = currentUser.username;
+            userInfo.style.display = 'flex';
+            messageInput.disabled = false;
+            submitBtn.disabled = false;
+        }
+    }
+
+    // 隐藏用户信息
+    function hideUserInfo() {
+        userInfo.style.display = 'none';
+        messageInput.disabled = true;
+        submitBtn.disabled = true;
+    }
+
+    // 显示登录弹窗
+    function showLoginModal() {
+        loginModal.classList.add('active');
+        hideUserInfo();
+    }
+
+    // 隐藏登录弹窗
+    function hideLoginModal() {
+        loginModal.classList.remove('active');
+    }
+
+    // 加载留言
+    function loadMessages() {
+        // 从localStorage获取留言
+        const savedMessages = localStorage.getItem('sf3_messages');
+
+        if (savedMessages) {
+            messages = JSON.parse(savedMessages);
+        } else {
+            // 如果没有留言，添加一些示例留言
+            messages = [
+                {
+                    id: 1,
+                    username: '暗影战士',
+                    content: '这款游戏真的太棒了！暗影形态的打击感超强！',
+                    time: '2023-10-15 14:30'
+                },
+                {
+                    id: 2,
+                    username: '格斗大师',
+                    content: '王朝派系的连招技巧谁有心得？求分享！',
+                    time: '2023-10-16 09:15'
+                },
+                {
+                    id: 3,
+                    username: '传奇玩家',
+                    content: '刚刚打通了主线剧情，结局太震撼了！期待续作！',
+                    time: '2023-10-16 18:45'
+                }
+            ];
+            saveMessages();
+        }
+
+        // 显示留言
+        displayMessages();
+    }
+
+    // 保存留言到localStorage
+    function saveMessages() {
+        localStorage.setItem('sf3_messages', JSON.stringify(messages));
+    }
+
+    // 显示留言列表
+    function displayMessages() {
+        messagesList.innerHTML = '';
+
+        if (messages.length === 0) {
+            messagesList.innerHTML = '<div class="no-messages">暂无留言，成为第一个留言的玩家吧！</div>';
+            messageCount.textContent = '0';
+            return;
+        }
+
+        // 按时间倒序排列（最新的在前）
+        const sortedMessages = [...messages].sort((a, b) => new Date(b.time) - new Date(a.time));
+
+        sortedMessages.forEach(message => {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message-item';
+
+            // 获取用户名的首字母作为头像
+            const avatarLetter = message.username.charAt(0);
+
+            messageElement.innerHTML = `
+                        <div class="message-user">
+                            <div class="message-avatar">${avatarLetter}</div>
+                            <div class="message-user-info">
+                                <div class="message-username">${message.username}</div>
+                                <div class="message-time">${message.time}</div>
+                            </div>
+                        </div>
+                        <div class="message-content">${message.content}</div>
+                    `;
+
+            messagesList.appendChild(messageElement);
+        });
+
+        // 更新留言数量
+        messageCount.textContent = messages.length;
+    }
+
+    // 发布新留言
+    function addNewMessage(content) {
+        if (!currentUser) {
+            alert('请先登录！');
+            showLoginModal();
+            return false;
+        }
+
+        if (!content || content.trim() === '') {
+            alert('留言内容不能为空！');
+            messageInput.focus();
+            return false;
+        }
+
+        if (content.length > maxLength) {
+            alert(`留言内容不能超过${maxLength}字！`);
+            messageInput.focus();
+            return false;
+        }
+
+        const newMessage = {
+            id: Date.now(),
+            username: currentUser.username,
+            content: content,
+            time: getCurrentTime()
+        };
+
+        // 添加到留言列表
+        messages.push(newMessage);
+
+        // 保存到localStorage
+        saveMessages();
+
+        // 更新显示
+        displayMessages();
+
+        return true;
+    }
+
+    // 获取当前时间
+    function getCurrentTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    // 更新字数统计
+    function updateWordCount() {
+        const currentLength = messageInput.value.length;
+        wordCount.textContent = `${currentLength}/${maxLength}字`;
+
+        // 根据字数改变颜色
+        if (currentLength > maxLength) {
+            wordCount.style.color = '#ef4444';
+        } else if (currentLength > maxLength * 0.8) {
+            wordCount.style.color = '#f59e0b';
+        } else {
+            wordCount.style.color = 'var(--muted)';
+        }
+    }
+
+    // 设置事件监听器
+    function setupEventListeners() {
+        // 登录按钮
+        goToLoginBtn.addEventListener('click', function () {
+            window.location.href = 'http://192.168.1.10:3000/login.html';
+        });
+
+        // 注册按钮
+        goToRegisterBtn.addEventListener('click', function () {
+            window.location.href = 'http://192.168.1.10:3000/register.html';
+        });
+
+        // 退出登录按钮
+        logoutBtn.addEventListener('click', function () {
+            if (confirm('确定要退出登录吗？')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                localStorage.removeItem('role');
+                currentUser = null;
+                hideUserInfo();
+                window.location.href = 'index.html';
+            }
+        });
+
+        // 输入事件
+        messageInput.addEventListener('input', updateWordCount);
+
+        // 焦点事件
+        messageInput.addEventListener('focus', function () {
+            wordCount.style.opacity = '1';
+        });
+
+        // 失去焦点事件
+        messageInput.addEventListener('blur', function () {
+            if (messageInput.value.trim().length === 0) {
+                wordCount.style.opacity = '0';
+            }
+        });
+
+        // 提交按钮
+        submitBtn.addEventListener('click', function () {
+            const content = messageInput.value.trim();
+
+            if (addNewMessage(content)) {
+                // 清空输入框
+                messageInput.value = '';
+                updateWordCount();
+
+                // 显示成功消息
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = '发布成功！';
+                submitBtn.style.background = '#10b981';
+
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.style.background = '';
+                }, 1500);
+            }
+        });
+
+        // 按Enter键发送（Ctrl+Enter）
+        messageInput.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+    }
+
+    // 初始化页面
+    initPage();
+});

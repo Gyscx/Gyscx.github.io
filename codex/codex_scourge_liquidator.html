@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>瘟疫清理者 | Shadow Fight 3 中文 Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="login-modal" style="display: none;">
+        <div class="login-box">
+            <h2>请先登录</h2>
+            <p>您需要登录才能访问此页面</p>
+
+            <div class="input-group">
+                <label for="loginUsername">用户名</label>
+                <input type="text" id="loginUsername" placeholder="请输入用户名">
+            </div>
+
+            <div class="input-group">
+                <label for="loginPassword">密码</label>
+                <input type="password" id="loginPassword" placeholder="请输入密码">
+            </div>
+
+            <div class="login-buttons">
+                <button id="performLogin" class="login-btn">登录</button>
+                <button id="goToRegister" class="register-btn">注册账号</button>
+            </div>
+        </div>
+    </div>
+    <header class="top">
+        <div class="logo"><img src="../images/Logo.png" alt="暗影格斗3" height="50"> </div>
+        <nav>
+            <a href="../index.html">首页</a>
+            <a href="../factions.html">派系</a>
+            <a href="../guides.html">攻略</a>
+            <a href="../codex.html">图鉴</a>
+            <a href="../story.html">剧情</a>
+            <a href="http://192.168.1.10:3000/login.html" class="login_display" id="loginDisplay"><span
+                    style="color: red;">登录</span></a>
+        </nav>
+
+        <!-- 用户信息区域 -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            欢迎， <span id="usernameDisplay"></span>
+            <button id="logoutBtn" class="logout-btn">退出登录</button>
+        </div>
+    </header>
+
+
+    <main class="container">
+        <nav class="breadcrumb">
+            <a href="../index.html">首页</a><span class="sep">›</span>
+            <a href="../codex.html">图鉴</a><span class="sep">›</span>
+            <a href="./codex_set_buff.html">套装(有BUFF)</a><span class="sep">›</span>
+            <a href="./codex_set_buff_legion.html">军团套装(有BUFF)</a><span class="sep">›</span>
+            瘟疫清理者
+        </nav>
+        <div>
+            <h2>瘟疫清理者</h2>
+
+            <h3><span class="title_y">1</span>-坚韧与精准</h3>
+            <span class="span_n">防御</span><span class="span_y">+15%</span><br>
+            <span class="span_n">远程武器伤害</span><span class="span_y">+70%</span><br><br>
+
+            <h3><span class="title_y">2</span>-烧竭</h3>
+            <span class="span_n">被动</span><br>
+            <span class="span_y">烧竭</span><br>
+            <span class="span_n">每当你使用武器或远程武器进行一次成功的攻击时，你的对手都会失去等于本次攻击造成伤害的125%的暗影能量</span><br><br>
+            <span class="span_n">被动</span><br>
+            <span class="span_y">破灭</span><br>
+            <span class="span_n">你的武器与远程武器攻击造成的物理伤害会根据对手暗影能量的多少增加</span><br>
+            <span class="span_y">0%-200%</span>
+            <span class="span_n">：对手的暗影能量越少，你造成的额外伤害就越多</span><br><br>
+
+            <h3><span class="title_y">3</span>-高效竭烧</h3>
+            <span class="span_n">烧竭效率</span><span class="span_y">+15%</span><br><br>
+
+            <h3><span class="title_y">4</span>-痛苦净化</h3>
+            <span class="span_y">痛苦净化<br></span>
+            <span class="span_n">你每通过烧竭燃烧对手10%的暗影能量，你的对手就额外收到</span>
+            <span class="span_y">5.5%</span>
+            <span class="span_n">的真实伤害。</span><br><br>
+            <span class="span_n">被动</span><br>
+            <span class="span_y">饲喂黑暗</span><br>
+            <span class="span_n">你会恢复等于对手被烧竭燃烧掉的暗影能量的</span>
+            <span class="span_y">20%</span>
+            <span class="span_n">的生命值。</span><br><br>
+
+            <h3><span class="title_y">5</span>-强化破灭</h3>
+            <span class="span_n">破灭伤害</span>
+            <span class="span_y">+35%</span><br><br>
+
+            <h3><span class="title_y">6</span>-暗影绝令</h3>
+            <span class="span_n">被动</span><br>
+            <span class="span_n">当你进入暗影之体状态时，你对自己周边造成</span>
+            <span class="span_y">15%</span>
+            <span class="span_n">的暗影伤害。</span><br>
+            <span class="span_n">当你处于暗影之体状态时，你通过烧竭、破灭、痛苦净化、以及饲喂黑暗获得的加成增加</span>
+            <span class="span_y">100%</span>
+            <span class="span_n">，且你每通过烧竭燃烧对手</span>
+            <span class="span_y">10%</span>
+            <span class="span_n">的暗影能量，你的暗影之体状态的持续时间就延长</span>
+            <span class="span_y">0.8秒</span>
+            <span class="span_n">。</span><br><br>
+        </div>
+
+    </main>
+    <footer>
+        本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
+    </footer>
+    <script src="../javascript/profile.js"></script>
+</body>
+
+</html>

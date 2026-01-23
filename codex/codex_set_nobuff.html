@@ -3,13 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>攻略 | Shadow Fight 3 中文 Wiki</title>
+    <title>武器 | Shadow Fight 3 中文 Wiki</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 
-<body class="theme-accent"><!-- 可选：派系主题 -->
-
+<body>
     <!-- 登录模态框 -->
     <div id="loginModal" class="login-modal" style="display: none;">
         <div class="login-box">
@@ -33,13 +32,13 @@
         </div>
     </div>
     <header class="top">
-        <div class="logo"><img src="./images/Logo.png" alt="暗影格斗3" height="50"> </div>
+        <div class="logo"><img src="../images/Logo.png" alt="暗影格斗3" height="50"> </div>
         <nav>
-            <a href="index.html">首页</a>
-            <a href="factions.html">派系</a>
-            <a href="guides.html">攻略</a>
-            <a href="codex.html">图鉴</a>
-            <a href="story.html">剧情</a>
+            <a href="../index.html">首页</a>
+            <a href="../factions.html">派系</a>
+            <a href="../guides.html">攻略</a>
+            <a href="../codex.html">图鉴</a>
+            <a href="../story.html">剧情</a>
             <a href="http://192.168.1.10:3000/login.html" class="login_display" id="loginDisplay"><span
                     style="color: red;">登录</span></a>
         </nav>
@@ -52,41 +51,34 @@
     </header>
 
     <main class="container">
-
-        <!-- Breadcrumb -->
         <nav class="breadcrumb">
-            <a href="index.html">首页</a>
-            <span class="sep">›</span>
-            攻略
+            <a href="../index.html">首页</a><span class="sep">›</span>
+            <a href="../codex.html">图鉴</a><span class="sep">›</span>
+            套装(无BUFF)
         </nav>
-
-        <!-- 页面内容从这里开始 -->
-        <h1>攻略索引</h1>
-        <section>
-            <h2>新手推荐</h2>
-            <ul>
-                <li><a href="./guide/guide_legion_counter.html">军团 · 防守反击流</a></li>
-            </ul>
-        </section>
-        <section>
-            <h2>进阶推荐</h2>
-            <ul>
-                <li><a href="./guide/guide_dynasty_combo.html">王朝 · 高速连击流</a></li>
-            </ul>
-        </section>
-        <section>
-            <h2>老手推荐</h2>
-            <ul>
-                <li><a href="./guide/guide_herald_burst.html">先锋 · 高风险爆发流</a></li>
-            </ul>
-        </section>
-
+        <div>
+            <img src="../images/Legion.png" alt="军团" class="responsive-img2"><img src="../images/Dynasty.png" alt="王朝"
+                class="responsive-img2"><img src="../images/Heralds.png" alt="先锋" class="responsive-img2">
+        </div>
+        <div class="grid">
+            <a class="card" href="fa.html">
+                <h3>军团套装</h3>
+                <p>纪律 · 防守反击</p>
+            </a>
+            <a class="card" href="fa.html">
+                <h3>王朝套装</h3>
+                <p>高速 · 连击压制</p>
+            </a>
+            <a class="card" href="fa.html">
+                <h3>先锋套装</h3>
+                <p>机制 · 高风险爆发</p>
+            </a>
+        </div>
     </main>
-
     <footer>
         本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
     </footer>
-    <script src="./javascript/profile.js"></script>
+    <script src="../javascript/profile.js"></script>
 </body>
 
 </html>

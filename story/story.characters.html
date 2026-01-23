@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>剧情-角色小传 | Shadow Fight 3 中文 Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body class="theme-legion"><!-- 可选：派系主题 -->
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="login-modal" style="display: none;">
+        <div class="login-box">
+            <h2>请先登录</h2>
+            <p>您需要登录才能访问此页面</p>
+
+            <div class="input-group">
+                <label for="loginUsername">用户名</label>
+                <input type="text" id="loginUsername" placeholder="请输入用户名">
+            </div>
+
+            <div class="input-group">
+                <label for="loginPassword">密码</label>
+                <input type="password" id="loginPassword" placeholder="请输入密码">
+            </div>
+
+            <div class="login-buttons">
+                <button id="performLogin" class="login-btn">登录</button>
+                <button id="goToRegister" class="register-btn">注册账号</button>
+            </div>
+        </div>
+    </div>
+    <header class="top">
+        <div class="logo"><img src="../images/Logo.png" alt="暗影格斗3" height="50"> </div>
+        <nav>
+            <a href="../index.html">首页</a>
+            <a href="../factions.html">派系</a>
+            <a href="../guides.html">攻略</a>
+            <a href="../codex.html">图鉴</a>
+            <a href="../story.html">剧情</a>
+            <a href="http://192.168.1.10:3000/login.html" class="login_display" id="loginDisplay"><span
+                    style="color: red;">登录</span></a>
+        </nav>
+
+        <!-- 用户信息区域 -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            欢迎， <span id="usernameDisplay"></span>
+            <button id="logoutBtn" class="logout-btn">退出登录</button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="../index.html">首页</a><span class="sep">›</span>
+            <a href="../story.html">剧情</a><span class="sep">›</span>
+            角色小传
+        </nav>
+
+        <!-- 页面内容从这里开始 -->
+        <section class="profile">
+            <div class="avatar">角色立绘占位</div>
+
+            <div class="info">
+                <h1>影子（Shadow）</h1>
+                <div class="tags">
+                    <span class="tag legion">军团关联</span>
+                    <span class="tag dynasty">王朝关联</span>
+                    <span class="tag herald">先锋关联</span>
+                </div>
+
+                <div class="section">
+                    <h3>角色概述</h3>
+                    <p>
+                        影子是暗影格斗 3 的核心角色，也是连接所有派系冲突的关键人物。
+                        他的存在本身便象征着暗影能量的失控与重塑。
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h3>剧情定位</h3>
+                    <p>
+                        在主线剧情中，影子既是参与者，也是被观察者。
+                        不同派系对他的态度，直接反映了他们对暗影力量的理解与恐惧。
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h3>与派系的关系</h3>
+                    <p>
+                        军团试图将影子视为威胁并加以控制；
+                        王朝希望通过他寻找暗影与武学的平衡；
+                        先锋则将他看作验证理论的关键样本。
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h3>关键事件</h3>
+                    <p>
+                        · 暗影觉醒
+                        <br />· 派系试探
+                        <br />· 世界线分歧
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        本站为 Shadow Fight 3 非官方中文 Wiki，与 Nekki/万达院线游戏(互爱互动) 无隶属关系。
+    </footer>
+    <script src="../javascript/profile.js"></script>
+</body>
+
+</html>
